@@ -21,5 +21,5 @@ func main() {
 
 	imgur.create_album("name", "descr", "hidden", "blog")
 
-	startWeb()
+	//startWeb()
 }
