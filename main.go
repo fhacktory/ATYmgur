@@ -19,4 +19,5 @@ func main() {
 	imgur.token_url = "https://api.imgur.com/oauth2/token"
 	imgur.init()
 
+	startWeb()
 }
