@@ -14,6 +14,8 @@ Automatically scan a folder and upload new images to Imgur.
 
 `go get github.com/joho/godotenv`
 
+`go get github.com/atotto/clipboard`
+
 # env to put in .env
 
 ```
