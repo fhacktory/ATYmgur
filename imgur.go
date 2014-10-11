@@ -2,13 +2,35 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
 )
 
-func (i *imgur) upload_image(path string, title string) {
+type AnswerRequest struct {
+	Data    ImageMetaData
+	Success bool
+}
+
+type ImageMetaData struct {
+	Id          string
+	Title       string
+	Description string
+	Datetime    int64
+	Type        string
+	Animated    bool
+	Width       int64
+	Height      int64
+	Size        int64
+	Views       int64
+	Link        string
+}
+
+func (i *imgur) upload_image(path string, title string) string {
+	var imMeta AnswerRequest
+
 	reader, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +51,12 @@ func (i *imgur) upload_image(path string, title string) {
 		log.Fatal(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println(string(body))
+	err = json.Unmarshal(body, &imMeta)
+	if err != nil {
+		log.Fatal(err)
+	}
+	add_img_to_clipboard(imMeta.Data.Link)
+	return imMeta.Data.Link
 }
 
 func (i *imgur) create_album(name string, descr string, privacy string, layout string) {
@@ -43,5 +70,5 @@ func (i *imgur) create_album(name string, descr string, privacy string, layout s
 		log.Fatal(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println(string(body))
+	body = body
 }
