@@ -22,5 +22,6 @@ func main() {
 	imgur.create_album("name", "descr", "hidden", "blog")
 	imgur.upload_image("/home/vayan/Downloads/foo.jpg", "foomage")
 
+	folderWatcher()
 	startWeb()
 }
