@@ -6,5 +6,6 @@ import (
 
 func main() {
 	fmt.Println("Hello me")
-	startWeb()
+	//startWeb()
+	encod()
 }
