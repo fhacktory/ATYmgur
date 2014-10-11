@@ -19,5 +19,9 @@ func main() {
 	imgur.token_url = "https://api.imgur.com/oauth2/token"
 	imgur.init()
 
+	imgur.create_album("name", "descr", "hidden", "blog")
+
+	imgur.upload_image("/home/vayan/Downloads/foo.jpg", "foomage")
+
 	startWeb()
 }
