@@ -6,7 +6,9 @@ import (
 )
 
 func folderWatcher() {
+	var i int
 	watcher, err := fsnotify.NewWatcher()
+	folderNamesArray := []string{"/tmp/foo", "/tmp/foo2"}
 
 	if err != nil {
 		fmt.Println(err)
@@ -28,8 +30,9 @@ func folderWatcher() {
 		}
 	}()
 
-	err = watcher.Add("/tmp/foo")
-	err = watcher.Add("/tmp/foo2")
+	for i = 0; i < len(folderNamesArray); i++ {
+		err = watcher.Add(folderNamesArray[i])
+	}
 
 	if err != nil {
 		fmt.Println(err)
