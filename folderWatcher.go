@@ -4,22 +4,19 @@ import (
 	"fmt"
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
-	"os"
 )
 
-func initFolder(folderPath string) (fileInfo os.FileInfo) {
+func initFolder(folderPath string, img *imgur) {
 	dir, _ := ioutil.ReadDir(folderPath)
 	for _, f := range dir {
 		fmt.Println(f.Name())
+		img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 	}
-
-	return fileInfo
 }
 
-func folderWatcher() {
+func folderWatcher(foldersNamesArray []string, img *imgur) {
 	var i int
 	watcher, err := fsnotify.NewWatcher()
-	foldersNamesArray := []string{"/tmp/foo", "/tmp/foo2", "/tmp/foo3"}
 
 	if err != nil {
 		fmt.Println(err)
@@ -31,9 +28,8 @@ func folderWatcher() {
 		for {
 			select {
 			case event := <-watcher.Events:
-				fmt.Println("event:", event)
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					fmt.Println("modified file:", event.Name)
+				if event.Op == fsnotify.Create {
+					img.upload_image(event.Name, "foobarfoobar")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)
@@ -42,9 +38,7 @@ func folderWatcher() {
 	}()
 
 	for i = 0; i < len(foldersNamesArray); i++ {
-		fileInfo := initFolder(foldersNamesArray[i])
-		// Yann's plug there
-		fileInfo = fileInfo
+		initFolder(foldersNamesArray[i], img)
 		err = watcher.Add(foldersNamesArray[i])
 	}
 
