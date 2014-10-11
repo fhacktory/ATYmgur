@@ -13,7 +13,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func Settings(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, Set your %s!", r.URL.Path[1:])
+	encod(w, r)
 }
 
 func Callback(w http.ResponseWriter, r *http.Request) {
