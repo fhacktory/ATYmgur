@@ -1,40 +1,38 @@
 package main
 
 import (
-	"gopkg.in/fsnotify.v1"
 	"fmt"
+	"gopkg.in/fsnotify.v1"
 )
 
-func folderWatcher() 
-{
+func folderWatcher() {
 	watcher, err := fsnotify.NewWatcher()
-	
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-
 	defer watcher.Close()
-	done := make(chan bool)
 
-	go func() 
-	{
+	done := make(chan bool)
+	go func() {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Println("event:", event)
+				fmt.Println("event:", event)
 				if event.Op&fsnotify.Write == fsnotify.Write {
-				log.Println("modified file:", event.Name)
+					fmt.Println("modified file:", event.Name)
 				}
 			case err := <-watcher.Errors:
-				log.Println("error:", err)
+				fmt.Println("error:", err)
 			}
 		}
 	}()
 
 	err = watcher.Add("/tmp/foo")
+	err = watcher.Add("/tmp/foo2")
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	<-done
-	
 }
