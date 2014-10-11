@@ -9,15 +9,15 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, Welcome to Home!", r.URL.Path[1:])
+	fmt.Fprintf(w, "Hi there, Welcome to Home!")
 }
 
 func Settings(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, Set your %s!", r.URL.Path[1:])
+	encod(w)
 }
 
 func Callback(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, %s page!", r.URL.Path[1:])
+	fmt.Fprintf(w, "Hi there, callback page!")
 }
 
 func startWeb() {
