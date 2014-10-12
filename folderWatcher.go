@@ -4,24 +4,26 @@ import (
 	"fmt"
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
+	"log"
 )
 
-// Checks if folder already got images in it
 func initFolder(folderPath string, img *imgur) {
 	var isFile bool
 	dir, _ := ioutil.ReadDir(folderPath)
+
+	log.Println("Uploading content of folder ", folderPath)
+
 	for _, f := range dir {
 		isFile = fileCheck(f.Name())
 		if isFile == true {
 			fmt.Println(f.Name())
-			img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+			go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 		} else {
 			fmt.Println(f.Name() + " Extension not valid, upload an image pls")
 		}
 	}
 }
 
-// Loops on foldersNamesArray and add watcher to every one of them
 func folderWatcher(foldersNamesArray []string, img *imgur) {
 	var i int
 	watcher, err := fsnotify.NewWatcher()
@@ -37,7 +39,8 @@ func folderWatcher(foldersNamesArray []string, img *imgur) {
 			select {
 			case event := <-watcher.Events:
 				if event.Op == fsnotify.Create {
-					img.upload_image(event.Name, "foobarfoobar")
+					log.Println("New image detected")
+					go img.upload_image(event.Name, "atymgur")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)

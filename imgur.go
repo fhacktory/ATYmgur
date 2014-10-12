@@ -31,6 +31,7 @@ type ImageMetaData struct {
 func (i *imgur) upload_image(path string, title string) string {
 	var imMeta AnswerRequest
 
+	log.Println("Starting upload : ", path)
 	reader, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -42,7 +43,7 @@ func (i *imgur) upload_image(path string, title string) string {
 	resp, err := i.cl.PostForm("https://api.imgur.com/3/image",
 		url.Values{
 			"image":       {img_base64},
-			"album":       {},
+			"album":       {CONFIG.Album_key},
 			"type":        {"base64"},
 			"title":       {title},
 			"description": {"Uploaded with ATYmgur"},
@@ -56,10 +57,16 @@ func (i *imgur) upload_image(path string, title string) string {
 		log.Fatal(err)
 	}
 	add_img_to_clipboard(imMeta.Data.Link)
+	log.Println("Upload finished : ", path)
+	if !imMeta.Success {
+		log.Println(string(body))
+	}
 	return imMeta.Data.Link
 }
 
 func (i *imgur) create_album(name string, descr string, privacy string, layout string) {
+	var albMeta AnswerRequest
+
 	resp, err := i.cl.PostForm("https://api.imgur.com/3/album",
 		url.Values{
 			"title":       {name},
@@ -70,5 +77,10 @@ func (i *imgur) create_album(name string, descr string, privacy string, layout s
 		log.Fatal(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	body = body
+	err = json.Unmarshal(body, &albMeta)
+	if err != nil {
+		log.Fatal(err)
+	}
+	CONFIG.Album_key = albMeta.Data.Id
+	save_conf()
 }
