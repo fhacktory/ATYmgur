@@ -34,7 +34,7 @@ func (i *imgur) upload_image(path string, title string) string {
 	log.Println("Starting upload : ", path)
 	reader, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error open file to upload :", err)
 	}
 	defer reader.Close()
 	imgdata, _ := ioutil.ReadAll(reader)
@@ -49,17 +49,17 @@ func (i *imgur) upload_image(path string, title string) string {
 			"description": {"Uploaded with ATYmgur"},
 			"layout":      {"blog"}})
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error send new image :", err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &imMeta)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error upload : ", err)
 	}
 	add_img_to_clipboard(imMeta.Data.Link)
 	log.Println("Upload finished : ", path)
 	if !imMeta.Success {
-		log.Println(string(body))
+		log.Println("Upload wasn't successful : ", string(body))
 	}
 	return imMeta.Data.Link
 }
@@ -74,12 +74,12 @@ func (i *imgur) create_album(name string, descr string, privacy string, layout s
 			"privacy":     {privacy},
 			"layout":      {layout}})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &albMeta)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error upload : ", err)
 	}
 	CONFIG.Album_key = albMeta.Data.Id
 	save_conf()
