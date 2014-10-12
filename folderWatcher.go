@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
+	"log"
 )
 
 func initFolder(folderPath string, img *imgur) {
 	dir, _ := ioutil.ReadDir(folderPath)
+	log.Println("Uploading content of folder ", folderPath)
 	for _, f := range dir {
-		fmt.Println(f.Name())
-		img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+		go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 	}
 }
 
@@ -29,7 +30,8 @@ func folderWatcher(foldersNamesArray []string, img *imgur) {
 			select {
 			case event := <-watcher.Events:
 				if event.Op == fsnotify.Create {
-					img.upload_image(event.Name, "foobarfoobar")
+					log.Println("New image detected")
+					go img.upload_image(event.Name, "foobarfoobar")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)

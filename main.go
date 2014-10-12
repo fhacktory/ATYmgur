@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+var (
+	ROOT_WEB = os.Getenv("GOPATH") + "/src/github.com/fhacktory/ATYmgur/www/"
+)
+
 func main() {
 	err := godotenv.Load()
 	var imgur imgur
@@ -19,9 +23,6 @@ func main() {
 	imgur.token_url = "https://api.imgur.com/oauth2/token"
 	imgur.init()
 
-	//imgur.create_album("name", "descr", "hidden", "blog")
-	//imgur.upload_image("/home/vayan/Downloads/foo.jpg", "foomage")
-
-	folderWatcher([]string{"/home/vayan/up_to_imgur"}, &imgur)
+	go folderWatcher([]string{"/home/vayan/up_to_imgur"}, &imgur)
 	startWeb()
 }

@@ -31,6 +31,7 @@ type ImageMetaData struct {
 func (i *imgur) upload_image(path string, title string) string {
 	var imMeta AnswerRequest
 
+	log.Println("Starting upload : ", path)
 	reader, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -56,6 +57,7 @@ func (i *imgur) upload_image(path string, title string) string {
 		log.Fatal(err)
 	}
 	add_img_to_clipboard(imMeta.Data.Link)
+	log.Println("Upload finished : ", path)
 	return imMeta.Data.Link
 }
 
