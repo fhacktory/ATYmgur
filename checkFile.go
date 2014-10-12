@@ -9,8 +9,13 @@ func fileCheck(fileName string) bool {
 	var matched bool
 	imgExt := []string{
 		".jpeg",
+		".jpg",
+		".JPG",
+		".JPEG",
 		".png",
+		".PNG",
 		".gif",
+		".GIF",
 	}
 
 	for i = 0; i < len(imgExt); i++ {
