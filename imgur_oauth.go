@@ -30,6 +30,7 @@ func (i *imgur) init() {
 		log.Fatal(err)
 	}
 	log.Println("Init oauth starting...")
+
 	url_def := conf.AuthCodeURL("state", "online", "auto")
 	url_pin, _ := url.Parse(url_def)
 	url_pin_q := url_pin.Query()
@@ -37,28 +38,35 @@ func (i *imgur) init() {
 	url_pin.RawQuery = url_pin_q.Encode()
 	fmt.Printf("Visit the URL and get the code: \n%v\n\n", url_pin)
 
-	fmt.Print("Enter the PIN Number of the ATM Machine : ")
-	fmt.Scanf("%s", &i.pin)
-
-	//hack because we can't change the grant_type in this fuckin lib
-	resp, err := http.PostForm("https://api.imgur.com/oauth2/token",
-		url.Values{
-			"client_id":     {i.CLIENT_ID},
-			"client_secret": {i.CLIENT_SECRET},
-			"grant_type":    {"pin"},
-			"pin":           {i.pin}})
+	err = json.Unmarshal([]byte(CONFIG.Key), &i.token)
 	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Good PIN trying request")
-	defer resp.Body.Close()
+		fmt.Print("Enter the PIN Number of the ATM Machine : ")
+		fmt.Scanf("%s", &i.pin)
+		//hack because we can't change the grant_type in this fuckin lib
+		resp, err := http.PostForm("https://api.imgur.com/oauth2/token",
+			url.Values{
+				"client_id":     {i.CLIENT_ID},
+				"client_secret": {i.CLIENT_SECRET},
+				"grant_type":    {"pin"},
+				"pin":           {i.pin}})
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Good PIN trying request")
+		defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	json.Unmarshal(body, &i.token)
+		body, _ := ioutil.ReadAll(resp.Body)
+		CONFIG.Key = string(body)
+		json.Unmarshal(body, &i.token)
+	} else {
+		fmt.Println("Already auth ! lets use that :)")
+	}
+
 	i.token.TokenType = "Bearer" //HACK AGAIN T_T it's Bearer not bearer
 
 	i.trans = conf.NewTransport()
 	i.trans.SetToken(&i.token)
 
 	i.cl = http.Client{Transport: i.trans}
+	save_conf()
 }

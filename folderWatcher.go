@@ -11,7 +11,7 @@ func initFolder(folderPath string, img *imgur) {
 	dir, _ := ioutil.ReadDir(folderPath)
 	log.Println("Uploading content of folder ", folderPath)
 	for _, f := range dir {
-		go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+		go img.upload_image(folderPath+"/"+f.Name(), f.Name())
 	}
 }
 
@@ -31,7 +31,7 @@ func folderWatcher(foldersNamesArray []string, img *imgur) {
 			case event := <-watcher.Events:
 				if event.Op == fsnotify.Create {
 					log.Println("New image detected")
-					go img.upload_image(event.Name, "foobarfoobar")
+					go img.upload_image(event.Name, "atymgur")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)
