@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
-	"strings"
 )
 
 // Checks if folder already got images in it
 func initFolder(folderPath string, img *imgur) {
+	var isFile bool
 	dir, _ := ioutil.ReadDir(folderPath)
 	for _, f := range dir {
-		fmt.Println(f.Name())
-		if strings.Contains(f.Name(), "[*.jpeg][*.png][*.gif]") {
+		isFile = fileCheck(f.Name())
+		if isFile == true {
+			fmt.Println(f.Name())
 			img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 		} else {
-			fmt.Println("Upload an image plz")
+			fmt.Println(f.Name() + " Extension not valid, upload an image pls")
 		}
 	}
 }
