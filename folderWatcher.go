@@ -16,10 +16,9 @@ func initFolder(folderPath string, img *imgur) {
 	for _, f := range dir {
 		isFile = fileCheck(f.Name())
 		if isFile == true {
-			fmt.Println(f.Name())
 			go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 		} else {
-			fmt.Println(f.Name() + " Extension not valid, upload an image pls")
+			log.Println(f.Name() + " Extension not valid, upload an image pls")
 		}
 	}
 }
