@@ -16,7 +16,7 @@ func initFolder(folderPath string, img *imgur) {
 	for _, f := range dir {
 		isFile = fileCheck(f.Name())
 		if isFile == true {
-			go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+			img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
 		} else {
 			log.Println(f.Name() + " Extension not valid, upload an image pls")
 		}
@@ -39,7 +39,7 @@ func folderWatcher(foldersNamesArray []string, img *imgur) {
 			case event := <-watcher.Events:
 				if event.Op == fsnotify.Create {
 					log.Println("New image detected")
-					go img.upload_image(event.Name, "atymgur")
+					img.upload_image(event.Name, "atymgur")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)
@@ -48,7 +48,7 @@ func folderWatcher(foldersNamesArray []string, img *imgur) {
 	}()
 
 	for i = 0; i < len(foldersNamesArray); i++ {
-		initFolder(foldersNamesArray[i], img)
+		go initFolder(foldersNamesArray[i], img)
 		err = watcher.Add(foldersNamesArray[i])
 	}
 

@@ -29,7 +29,7 @@ func main() {
 		imgur.create_album("ATYmgur", "Default folder of ATYmgur app", "hidden", "grid")
 	}
 
-	go folderWatcher([]string{"/tmp/foo", "/tmp/foo2", "/home/origine/Downloads/image"}, &imgur)
+	go folderWatcher([]string{"/tmp/foo", "/tmp/foo2", "/home/vayan/up_to_imgur", "/home/origine/Downloads/image"}, &imgur)
 
 	startWeb()
 }
