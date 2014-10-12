@@ -20,7 +20,7 @@ func main() {
 	imgur.init()
 
 	imgur.create_album("name", "descr", "hidden", "blog")
-	imgur.upload_image("/home/vayan/Downloads/foo.jpg", "foomage")
+	imgur.upload_image("Downloads/tmp/foo", "foomage")
 
 	folderWatcher()
 	startWeb()

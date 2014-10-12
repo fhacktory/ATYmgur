@@ -4,22 +4,26 @@ import (
 	"fmt"
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
-	"os"
+	"strings"
 )
 
-func initFolder(folderPath string) (fileInfo os.FileInfo) {
+// Checks if folder already got images in it
+func initFolder(folderPath string, img *imgur) {
 	dir, _ := ioutil.ReadDir(folderPath)
 	for _, f := range dir {
 		fmt.Println(f.Name())
+		if strings.Contains(f.Name(), "[*.jpeg][*.png][*.gif]") {
+			img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+		} else {
+			fmt.Println("Upload an image plz")
+		}
 	}
-
-	return fileInfo
 }
 
-func folderWatcher() {
+// Loops on foldersNamesArray and add watcher to every one of them
+func folderWatcher(foldersNamesArray []string, img *imgur) {
 	var i int
 	watcher, err := fsnotify.NewWatcher()
-	foldersNamesArray := []string{"/tmp/foo", "/tmp/foo2", "/tmp/foo3"}
 
 	if err != nil {
 		fmt.Println(err)
@@ -31,9 +35,8 @@ func folderWatcher() {
 		for {
 			select {
 			case event := <-watcher.Events:
-				fmt.Println("event:", event)
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					fmt.Println("modified file:", event.Name)
+				if event.Op == fsnotify.Create {
+					img.upload_image(event.Name, "foobarfoobar")
 				}
 			case err := <-watcher.Errors:
 				fmt.Println("error:", err)
@@ -42,9 +45,7 @@ func folderWatcher() {
 	}()
 
 	for i = 0; i < len(foldersNamesArray); i++ {
-		fileInfo := initFolder(foldersNamesArray[i])
-		// Yann's plug there
-		fileInfo = fileInfo
+		initFolder(foldersNamesArray[i], img)
 		err = watcher.Add(foldersNamesArray[i])
 	}
 
