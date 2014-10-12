@@ -5,11 +5,13 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"html/template"
 	"net/http"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, Welcome to Home!")
+	t, _ := template.ParseFiles(ROOT_WEB + "index.html")
+	t.Execute(w, nil)
 }
 
 func Settings(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +28,7 @@ func startWeb() {
 	r.HandleFunc("/", Home)
 	r.HandleFunc("/settings", Settings)
 	r.HandleFunc("/callback", Callback)
+	r.PathPrefix("/assets/").Handler(http.FileServer(http.Dir(ROOT_WEB)))
 	http.Handle("/", r)
 	http.ListenAndServe(":8181", nil)
 	fmt.Println("Stoping WebServer")
