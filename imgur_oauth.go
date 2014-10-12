@@ -57,7 +57,10 @@ func (i *imgur) init() {
 
 		body, _ := ioutil.ReadAll(resp.Body)
 		CONFIG.Key = string(body)
-		json.Unmarshal(body, &i.token)
+		err = json.Unmarshal(body, &i.token)
+		if err != nil {
+			fmt.Println(string(body))
+		}
 	} else {
 		fmt.Println("Already auth ! lets use that :)")
 	}
