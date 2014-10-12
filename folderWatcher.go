@@ -8,10 +8,19 @@ import (
 )
 
 func initFolder(folderPath string, img *imgur) {
+	var isFile bool
 	dir, _ := ioutil.ReadDir(folderPath)
+
 	log.Println("Uploading content of folder ", folderPath)
+
 	for _, f := range dir {
-		go img.upload_image(folderPath+"/"+f.Name(), f.Name())
+		isFile = fileCheck(f.Name())
+		if isFile == true {
+			fmt.Println(f.Name())
+			go img.upload_image(folderPath+"/"+f.Name(), "foobarfoobar")
+		} else {
+			fmt.Println(f.Name() + " Extension not valid, upload an image pls")
+		}
 	}
 }
 
